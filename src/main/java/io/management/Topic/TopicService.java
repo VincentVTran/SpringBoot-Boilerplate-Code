@@ -1,5 +1,6 @@
 package io.management.Topic;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 //If this was made in controller, a new List would be made each HTTP request
 @Service
 public class TopicService {
+
     private List<Topic> dataService = new ArrayList<>(
             Arrays.asList(
                 new Topic("1", "Richard"),
@@ -56,6 +58,32 @@ public class TopicService {
                 dataService.remove(i);
             }
         }
+    }
+    //_____________________________________Connection to remote database_________________________
+
+    @Autowired //Injects a singleton topic repository into the variable
+    private TopicRepository topicRepository;
+
+    public List<Topic> getAllRemoteDatabase(){
+        List<Topic> list = new ArrayList<>();
+        topicRepository.findAll().forEach(topic -> list.add(topic));
+        return list;
+    }
+
+    public void addRemoteDatabase(Topic entity){
+        topicRepository.save(entity);
+    }
+
+    public Topic getSpecificRemoteDatabase(String id){
+        return topicRepository.findById(id).get();
+    }
+
+    public void updateRemoteDatabase(Topic entity){
+        topicRepository.save(entity); //Adds entity if does not exist; Updates if it does
+    }
+
+    public void deleteRemoteDatabase(String id){
+        topicRepository.deleteById(id);
     }
 
 }
